@@ -120,3 +120,29 @@ A module to manage kubernetes services. Here's a basic example:
 See module code for more documentation.
 
 **Notes:** The module is set to retry for a while. We need to improve error management at the kubernetes-py layer and bubble-up the errors to an ansible output variable.
+
+chronos_job
+--------------------------------------------------------------------
+
+A module to manage jobs to through chronos/mesos.
+
+Here is a basic example:
+
+      chronos_job:
+        chronos_hosts: "{{ groups['mesos-masters'] }}"
+        port: 4400
+        name: "sample-chronos-job"
+        state: created
+        start_time: "2015-11-11T00:00:00Z"
+        run_interval: "P1D"
+        epsilon: "PT6H"
+        cpus: 1.0
+        mem: 1024
+        docker_image: "{{ docker_registry }}/sample-chronos-job:{{ sample_chronos_job_version }}"
+        env: ["ENV={{ env_id }}","JAVA_OPTS=-Xmx512m -Xms512m"]
+        owner_email: "{{ chronos_job_alert_email }}"
+        uris: "{{ chronos_docker_cred_uri }}"
+      run_once: true
+      delegate_to: "{{ groups['mesos-masters'][0] }}"
+
+See module code for more documentation, testing and implementation TODO.
